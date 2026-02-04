@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Lua e Melhor Data para Vermífugo</title>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(120deg, #0f2027, #203a43, #2c5364);
+    color: #fff;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    background: rgba(0,0,0,0.6);
+    padding: 25px;
+    border-radius: 12px;
+    max-width: 420px;
+    width: 100%;
+    text-align: center;
+}
+
+h1 {
+    font-size: 22px;
+    margin-bottom: 15px;
+}
+
+.box {
+    background: rgba(255,255,255,0.08);
+    padding: 15px;
+    border-radius: 8px;
+    margin: 10px 0;
+}
+
+.data {
+    font-size: 18px;
+    font-weight: bold;
+    margin-top: 5px;
+}
+
+.alerta {
+    font-size: 12px;
+    opacity: 0.85;
+    margin-top: 15px;
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+    <h1>🌙 Fase da Lua & Data Tradicional</h1>
+
+    <div class="box">
+        <div>Fase da Lua Hoje:</div>
+        <div class="data" id="faseAtual"></div>
+    </div>
+
+    <div class="box">
+        <div>Melhor data (Lua Minguante):</div>
+        <div class="data" id="melhorData"></div>
+    </div>
+
+    <div class="alerta">
+        ⚠️ Informação baseada em tradição popular.  
+        Não substitui orientação médica.
+    </div>
+</div>
+
+<script>
+const CICLO_LUNAR = 29.53058867;
+const LUA_NOVA_REF = new Date("2000-01-06T18:14:00Z");
+
+function faseDaLua(data) {
+    const dias = (data - LUA_NOVA_REF) / (1000 * 60 * 60 * 24);
+    const idade = ((dias % CICLO_LUNAR) + CICLO_LUNAR) % CICLO_LUNAR;
+
+    if (idade < 1.84566) return "Lua Nova 🌑";
+    if (idade < 5.53699) return "Lua Crescente 🌒";
+    if (idade < 9.22831) return "Quarto Crescente 🌓";
+    if (idade < 12.91963) return "Gibosa Crescente 🌔";
+    if (idade < 16.61096) return "Lua Cheia 🌕";
+    if (idade < 20.30228) return "Gibosa Minguante 🌖";
+    if (idade < 23.99361) return "Quarto Minguante 🌗";
+    if (idade < 27.68493) return "Lua Minguante 🌘";
+    return "Lua Nova 🌑";
+}
+
+function encontrarProximaMinguante() {
+    const hoje = new Date();
+    for (let i = 0; i < 60; i++) {
+        const d = new Date();
+        d.setDate(hoje.getDate() + i);
+        if (faseDaLua(d).includes("Minguante")) {
+            return d;
+        }
+    }
+    return null;
+}
+
+const hoje = new Date();
+document.getElementById("faseAtual").textContent = faseDaLua(hoje);
+
+const melhor = encontrarProximaMinguante();
+if (melhor) {
+    document.getElementById("melhorData").textContent =
+        melhor.toLocaleDateString("pt-BR", {
+            weekday: "long",
+            day: "2-digit",
+            month: "long",
+            year: "numeric"
+        });
+}
+</script>
+</body>
+</html>
